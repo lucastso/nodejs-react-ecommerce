@@ -18,10 +18,8 @@ const Home = () => {
     (async () => {
       try {
         setIsLoading(true);
-        const { data } = await api.get<Array<ProductInterface>>(
-          "/products/get"
-        );
-        setProducts(data);
+        const { data } = await api.get<Array<ProductInterface>>("/products/");
+        console.log(data);
       } catch (error) {
         console.log(error);
       } finally {
