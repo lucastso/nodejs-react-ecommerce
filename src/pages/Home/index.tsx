@@ -4,24 +4,42 @@ import Product from "../../components/Product";
 import api from "../../api";
 
 interface ProductInterface {
-  title: String;
+  name: String;
+  price: Number;
+  image: String;
+  description: String;
 }
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Array<ProductInterface>>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const response = await api.get("/products");
-      if (response.status != 200) {
-        console.log("erro");
-      } else {
-        setProducts(response.data);
+    (async () => {
+      try {
+        setIsLoading(true);
+        const { data } = await api.get<Array<ProductInterface>>(
+          "/products/get"
+        );
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
       }
-    };
+    })();
+  }, [products]);
 
-    fetchProducts();
-  }, []);
+  if (isLoading) {
+    return (
+      <>
+        <Nav />
+        <h1 className="font-bold flex justify-center items-center mt-10 text-zinc-800">
+          Carregando produtos...
+        </h1>
+      </>
+    );
+  }
 
   return (
     <>
